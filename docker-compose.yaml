@@ -3,9 +3,6 @@ services:
     image: ${IMAGE_NAME}
     restart: unless-stopped
     env_file: .env
-    depends_on:
-      postgres:
-        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${SERVICE_DOMAIN}`)"
@@ -14,30 +11,7 @@ services:
       - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=${PORT:-80}"
     networks:
       - traefik-network
-      - internal
-
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${DB_USERNAME:-laravel}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE:-laravel}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-laravel}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - internal
-
-volumes:
-  postgres_data:
 
 networks:
   traefik-network:
     external: true
-  internal:
-    driver: bridge
