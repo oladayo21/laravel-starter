@@ -8,7 +8,7 @@ services:
       - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${SERVICE_DOMAIN}`)"
       - "traefik.http.routers.${SERVICE_NAME}.entrypoints=websecure"
       - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=${PORT:-8080}"
+      - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=${PORT:-80}"
     networks:
       - traefik-network
 
