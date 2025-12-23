@@ -1,0 +1,17 @@
+services:
+  web:
+    image: ${IMAGE_NAME}
+    restart: unless-stopped
+    env_file: .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${SERVICE_DOMAIN}`)"
+      - "traefik.http.routers.${SERVICE_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=${PORT:-8080}"
+    networks:
+      - traefik-network
+
+networks:
+  traefik-network:
+    external: true
